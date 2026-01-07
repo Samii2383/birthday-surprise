@@ -1,0 +1,863 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global Primary Button Style - Single Source of Truth */
+.primary-btn {
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.primary-btn:hover {
+    transform: scale(1.05);
+}
+
+.primary-btn:active {
+    transform: scale(0.98);
+}
+
+/* Global Button Size - Uniform sizing across all scenes */
+.global-btn {
+    padding: 15px 40px;
+    font-size: 20px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    min-height: 44px; /* Touch-friendly minimum height */
+    min-width: 120px; /* Ensure buttons are tappable */
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    background-color: #000;
+}
+
+/* Scene Management */
+.scene {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease-in-out;
+    z-index: 1;
+}
+
+.scene.active {
+    opacity: 1;
+    pointer-events: all;
+    z-index: 10;
+}
+
+.scene:not(.active) {
+    opacity: 0;
+    z-index: 1;
+}
+
+/* Scene 1: Open */
+.scene-1 {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.open-btn {
+    box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+    }
+    50% {
+        box-shadow: 0 0 50px rgba(102, 126, 234, 0.9), 0 0 80px rgba(102, 126, 234, 0.5);
+    }
+}
+
+/* Scene 2: Birthday Wish */
+.scene-2 {
+    background: linear-gradient(180deg, #0a0a1a 0%, #1a1a3e 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+#fireworksCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    touch-action: none; /* Prevent touch scrolling on canvas */
+}
+
+.birthday-text {
+    font-size: clamp(24px, 6vw, 64px);
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    z-index: 2;
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.8);
+    text-stroke: 2px rgba(255, 255, 255, 0.8);
+    text-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(255, 20, 147, 0.6),
+        0 0 30px rgba(255, 20, 147, 0.4),
+        0 0 40px rgba(255, 20, 147, 0.2);
+    animation: glow 2s ease-in-out infinite alternate;
+    padding: 20px;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 
+            0 0 10px rgba(255, 255, 255, 0.8),
+            0 0 20px rgba(255, 20, 147, 0.6),
+            0 0 30px rgba(255, 20, 147, 0.4);
+    }
+    to {
+        text-shadow: 
+            0 0 20px rgba(255, 255, 255, 1),
+            0 0 30px rgba(255, 20, 147, 0.8),
+            0 0 40px rgba(255, 20, 147, 0.6),
+            0 0 50px rgba(255, 20, 147, 0.4);
+    }
+}
+
+.celebrate-btn {
+    margin-top: 40px;
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+}
+
+.celebrate-btn.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.celebrate-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Scene 3: Cake Cutting */
+.scene-3 {
+    background-color: #8b4513;
+    background-image: url(assets/room.jpeg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.scene-3::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 0;
+    pointer-events: none;
+}
+
+
+.cake-container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+.cut-title {
+    display: none;
+    font-size: clamp(20px, 4vw, 36px);
+    color: #fff;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    z-index: 2;
+}
+
+.cake-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+}
+
+.cake-img {
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    display: block;
+    transform: translateY(40px);
+    object-fit: contain;
+    margin: 0 auto;
+}
+
+.cake-cut {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(40px);
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    object-fit: contain;
+}
+
+.cake-cut.show {
+    display: block;
+}
+
+.cake-img:not(.cake-cut).hide {
+    display: none;
+}
+
+.candle-container {
+    display: none;
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+}
+
+.candle {
+    width: 20px;
+    height: 60px;
+    background: linear-gradient(to bottom, #fff 0%, #ffd700 100%);
+    border-radius: 10px 10px 0 0;
+    position: relative;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.flame {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 20px;
+    background: linear-gradient(to top, #ff6b00 0%, #ffd700 50%, #fff 100%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: flicker 0.3s ease-in-out infinite alternate;
+    box-shadow: 0 0 10px rgba(255, 107, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+@keyframes flicker {
+    0% {
+        transform: translateX(-50%) scale(1) rotate(-2deg);
+    }
+    100% {
+        transform: translateX(-50%) scale(1.1) rotate(2deg);
+    }
+}
+
+.candle-container.hide {
+    display: none;
+}
+
+.knife {
+    position: absolute;
+    top: 50%;
+    left: -80px;
+    transform: translateY(-50%);
+    width: 60px;
+    height: auto;
+    cursor: grab;
+    z-index: 4;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+}
+
+.knife.show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.knife:active {
+    cursor: grabbing;
+}
+
+.cut-cake-btn {
+    margin-top: 20px;
+    text-transform: uppercase;
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.3;
+    }
+}
+
+.post-cut-text {
+    font-size: clamp(24px, 6vw, 64px);
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    z-index: 5;
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.8);
+    text-stroke: 2px rgba(255, 255, 255, 0.8);
+    text-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(255, 20, 147, 0.6),
+        0 0 30px rgba(255, 20, 147, 0.4),
+        0 0 40px rgba(255, 20, 147, 0.2);
+    position: absolute;
+    top: -120px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    white-space: nowrap;
+}
+
+.post-cut-text.show {
+    animation: slideInFromSides 1s ease-out forwards;
+}
+
+@keyframes slideInFromSides {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) scaleX(0);
+        letter-spacing: -20px;
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) scaleX(1);
+        letter-spacing: normal;
+    }
+}
+
+.confetti-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+    touch-action: none; /* Prevent touch scrolling on canvas */
+}
+
+.next-btn {
+    margin-top: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+}
+
+.next-btn.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.next-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Scene 4: Gift */
+.scene-4 {
+    background-color: #8b4513;
+    background-image: url(assets/room.jpeg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.scene-4::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 0;
+    pointer-events: none;
+}
+
+
+.gift-container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+.gift-title {
+    display: none;
+    font-size: clamp(24px, 5vw, 40px);
+    color: #fff;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    transition: opacity 0.5s;
+}
+
+.gift-title.hide {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.gift-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gift-img {
+    width: 100%;
+    max-width: 432px;
+    height: auto;
+    transition: opacity 0.5s;
+    transform: translateY(40px);
+    object-fit: contain;
+    margin: 0 auto;
+}
+
+.gift-open {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(40px);
+    opacity: 0;
+    pointer-events: none;
+    width: 100%;
+    max-width: 432px;
+    height: auto;
+    object-fit: contain;
+}
+
+.gift-open.show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.gift-img:not(.gift-open).hide {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.gift-accept-text {
+    display: none;
+    font-size: clamp(20px, 4vw, 32px);
+    color: #fff;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+}
+
+.gift-accept-text.show {
+    opacity: 1;
+}
+
+.open-gift-btn {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+}
+
+.open-gift-btn.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.accept-btn {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+}
+
+.accept-btn.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.accept-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Scene 5: Final Message */
+.scene-5 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-color: #667eea;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+.final-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: row;
+}
+
+.text-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 40px;
+    color: #fff;
+    z-index: 1;
+    overflow-y: auto;
+    max-height: 100vh;
+}
+
+.final-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.final-heading {
+    font-size: clamp(24px, 4vw, 40px);
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.final-text {
+    font-size: clamp(14px, 1.8vw, 18px);
+    line-height: 1.8;
+    max-width: 600px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    padding-right: 10px;
+    margin-bottom: 0;
+}
+
+.image-panel {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.final-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    max-height: 100vh;
+    max-width: 100%;
+}
+
+.thank-you-btn {
+    margin-top: 30px;
+    align-self: center;
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+}
+
+.thank-you-btn.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.thank-you-btn:hover {
+    transform: translateX(-50%) scale(1.05);
+}
+
+.end-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(32px, 6vw, 64px);
+    color: #fff;
+    text-align: center;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    transition: opacity 1s ease-in-out;
+}
+
+.end-message.show {
+    opacity: 1;
+}
+
+/* ============================================
+   RESPONSIVE STYLES - MOBILE & TABLET
+   ============================================ */
+
+/* Mobile devices (480px and smaller) */
+@media (max-width: 480px) {
+    /* Scene 1: Open button */
+    .open-btn {
+        padding: 15px 35px;
+        font-size: clamp(18px, 4vw, 24px);
+    }
+
+    /* Scene 2: Birthday text */
+    .birthday-text {
+        font-size: clamp(20px, 5vw, 32px);
+        padding: 15px 10px;
+        line-height: 1.2;
+    }
+
+    /* Scene 2: Celebrate button */
+    .celebrate-btn {
+        margin-top: 30px;
+    }
+
+    /* Scene 3: Cake container */
+    .cake-container {
+        gap: 15px;
+        padding: 10px;
+    }
+
+    .cake-img, .cake-cut {
+        max-width: 100%;
+        padding: 0 10px;
+        transform: translateY(20px);
+    }
+
+    .post-cut-text {
+        font-size: clamp(18px, 5vw, 32px);
+        top: -80px;
+        padding: 0 10px;
+        white-space: normal; /* Allow wrapping on very small screens */
+        word-break: break-word;
+    }
+
+    .cut-cake-btn {
+        margin-top: 15px;
+    }
+
+    /* Scene 4: Gift container */
+    .gift-container {
+        gap: 20px;
+        padding: 10px;
+    }
+
+    .gift-img, .gift-open {
+        max-width: 100%;
+        padding: 0 10px;
+        transform: translateY(20px);
+    }
+
+    /* Scene 5: Final message - Stack layout */
+    .final-container {
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .text-panel {
+        padding: 15px;
+        max-height: 60vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        flex: 0 0 auto;
+    }
+
+    .image-panel {
+        max-height: 40vh;
+        min-height: 200px;
+        flex: 0 0 auto;
+    }
+
+    .final-image {
+        max-height: 40vh;
+        width: 100%;
+        object-fit: contain;
+    }
+
+    .final-text {
+        font-size: clamp(11px, 2.5vw, 14px);
+        max-width: 100%;
+    }
+
+    .final-heading {
+        font-size: clamp(18px, 4vw, 28px);
+        margin-bottom: 20px;
+    }
+
+    .thank-you-btn {
+        margin-top: 20px;
+    }
+
+    /* All buttons - ensure touch-friendly */
+    .global-btn {
+        padding: 14px 30px;
+        font-size: clamp(16px, 3.5vw, 18px);
+        min-height: 44px;
+    }
+}
+
+/* Small mobile devices (360px and smaller) */
+@media (max-width: 360px) {
+    .birthday-text {
+        font-size: clamp(18px, 6vw, 28px);
+        padding: 10px 5px;
+    }
+
+    .post-cut-text {
+        font-size: clamp(16px, 5vw, 24px);
+        top: -60px;
+    }
+
+    .final-text {
+        font-size: clamp(10px, 2.5vw, 12px);
+    }
+
+    .final-heading {
+        font-size: clamp(16px, 4vw, 24px);
+    }
+
+    .global-btn {
+        padding: 12px 25px;
+        font-size: clamp(14px, 3.5vw, 16px);
+    }
+}
+
+/* Landscape mobile orientation */
+@media (max-height: 500px) and (orientation: landscape) {
+    .scene-2 {
+        padding: 10px 0;
+    }
+
+    .birthday-text {
+        font-size: clamp(18px, 4vw, 32px);
+        padding: 10px;
+    }
+
+    .cake-container, .gift-container {
+        gap: 10px;
+    }
+
+    .final-container {
+        flex-direction: row; /* Keep side-by-side in landscape */
+    }
+
+    .text-panel {
+        max-height: 90vh;
+        padding: 15px;
+    }
+
+    .image-panel {
+        max-height: 90vh;
+        min-height: auto;
+    }
+
+    .final-image {
+        max-height: 90vh;
+    }
+}
+
+/* Large screens - ensure images don't get too large */
+@media (min-width: 1200px) {
+    .cake-img, .cake-cut {
+        max-width: 500px;
+    }
+
+    .gift-img, .gift-open {
+        max-width: 450px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE STYLES - MOBILE & TABLET
+   ============================================ */
+
+/* Tablet and below (768px and smaller) */
+@media (max-width: 768px) {
+    /* Scene 5: Stack layout vertically */
+    .final-container {
+        flex-direction: column;
+    }
+
+    .text-panel {
+        padding: 20px;
+        max-height: 50vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .image-panel {
+        max-height: 50vh;
+        min-height: 300px;
+        flex: 0 0 auto;
+    }
+
+    .final-image {
+        max-height: 50vh;
+        width: 100%;
+        object-fit: contain;
+    }
+
+    .final-text {
+        font-size: clamp(12px, 2vw, 16px);
+    }
+
+    /* Images scale down on tablet */
+    .cake-img, .cake-cut {
+        max-width: 100%;
+        padding: 0 20px;
+    }
+
+    .gift-img, .gift-open {
+        max-width: 100%;
+        padding: 0 20px;
+    }
+
+    /* Buttons remain touch-friendly */
+    .global-btn {
+        padding: 15px 35px;
+        font-size: clamp(16px, 3vw, 20px);
+    }
+}
+
